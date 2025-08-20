@@ -1,10 +1,10 @@
 import { FindInvoiceUseCaseInputDto } from "./find-invoice.usecase.dto"
 import FindInvoiceUseCase from "./find-invoice.usecase"
-import Invoince from "../../domain/invoice.entity"
+import Invoice from "../../domain/invoice.entity"
 import Id from "../../../@shared/domain/value-object/id.value-object"
 import Address from "../../../@shared/domain/value-object/address"
 
-const invoice = new Invoince({
+const invoice = new Invoice({
     id: new Id("1"),
     name: "Lucian",
     document: "1234-5678",
@@ -23,14 +23,14 @@ const invoice = new Invoince({
 
 const MockRepository = () => {
     return {
-        generate: jest.fn(),
+        add: jest.fn(),
         find: jest.fn().mockReturnValue(Promise.resolve(invoice))
     }
 }
 
-describe("Add Client use case unit test", () => {
+describe("Add Invoice use case unit test", () => {
 
-    it("should add a client", async () => {
+    it("should add a invloice", async () => {
 
         const repository = MockRepository()
         const usecase = new FindInvoiceUseCase(repository)

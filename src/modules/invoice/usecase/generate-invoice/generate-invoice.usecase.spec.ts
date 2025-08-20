@@ -3,14 +3,14 @@ import GenerateInvoiceUseCase from "./generate-invoice.usecase"
 
 const MockRepository = () => {
     return {
-        generate: jest.fn(),
+        add: jest.fn(),
         find: jest.fn()
     }
 }
 
-describe("Add Client use case unit test", () => {
+describe("Add Invoice use case unit test", () => {
 
-    it("should add a client", async () => {
+    it("should add an invoice", async () => {
 
         const repository = MockRepository()
         const usecase = new GenerateInvoiceUseCase(repository)
@@ -35,7 +35,7 @@ describe("Add Client use case unit test", () => {
 
         const result = await usecase.execute(input)
 
-        expect(repository.generate).toHaveBeenCalled()
+        expect(repository.add).toHaveBeenCalled()
         expect(result.id).toBeDefined()
         expect(result.name).toEqual(input.name)
         expect(result.document).toEqual(input.document)

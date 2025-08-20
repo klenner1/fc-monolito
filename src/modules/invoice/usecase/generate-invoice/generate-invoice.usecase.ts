@@ -1,7 +1,7 @@
 import Address from "../../../@shared/domain/value-object/address"
 import Id from "../../../@shared/domain/value-object/id.value-object"
-import Invoince from "../../domain/invoice.entity"
-import InvoiceItem from "../../domain/invoiceItems.entity"
+import Invoice from "../../domain/invoice.entity"
+import InvoiceItem from "../../domain/invoice-items.entity"
 import InvoiceGateway from "../../gateway/invoice.gateway"
 import { GenerateInvoiceUseCaseInputDto, GenerateInvoiceUseCaseOutputDto } from "./generate-invoice.usecase.dto"
 
@@ -36,8 +36,8 @@ export default class GenerateInvoiceUseCase {
             ],
         }
 
-        const invoice = new Invoince(props)
-        await this._invoiceRepository.generate(invoice)
+        const invoice = new Invoice(props)
+        await this._invoiceRepository.add(invoice)
 
         return {
             id: invoice.id.id,

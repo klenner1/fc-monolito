@@ -2,7 +2,7 @@ import AggregateRoot from "../../@shared/domain/entity/aggregate-root.interface"
 import BaseEntity from "../../@shared/domain/entity/base.entity"
 import Address from "../../@shared/domain/value-object/address"
 import Id from "../../@shared/domain/value-object/id.value-object"
-import InvoiceItem from "./invoiceItems.entity"
+import InvoiceItem from "./invoice-items.entity"
 
 
 type InvoinceProps ={
@@ -15,7 +15,7 @@ type InvoinceProps ={
     updatedAt?: Date
 }
 
-export default class Invoince extends BaseEntity implements AggregateRoot {
+export default class Invoice extends BaseEntity implements AggregateRoot {
 
     private _name: string
     private _document: string

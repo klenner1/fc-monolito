@@ -6,7 +6,7 @@ import InvoiceItem from "./invoice-items.entity"
 
 
 type InvoinceProps ={
-    id: Id
+    id?: Id
     name: string
     document: string
     address: Address

@@ -2,7 +2,7 @@ import BaseEntity from "../../@shared/domain/entity/base.entity"
 import Id from "../../@shared/domain/value-object/id.value-object"
 
 type InvoiceItemProps = {
-    id: Id
+    id?: Id
     name: string
     price: number
     createdAt?: Date

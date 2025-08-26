@@ -98,5 +98,5 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "src/infrastructure/db/migrations/2025.08.26T14.13.45.invoices.ts.a"]
 }

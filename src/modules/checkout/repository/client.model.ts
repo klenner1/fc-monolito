@@ -1,20 +1,21 @@
-import { Column, HasMany, Model, PrimaryKey, Table } from "sequelize-typescript";
-import { InvoiceItemModel } from "./invoice-item.model";
+import { Column, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { OrderModel } from "./order.model";
+
 
 @Table({
-    tableName: 'invoices',
-    timestamps: false
+    tableName: "clients",
+    timestamps: false,
 })
-export class InvoiceModel extends Model {
+export class CheckoutClientModel extends Model {
     @PrimaryKey
     @Column({ allowNull: false })
-    declare id: string
+    declare id: string;
 
     @Column({ allowNull: false })
-    declare name: string
+    declare name: string;
 
     @Column({ allowNull: false })
-    declare document: string
+    declare email: string;
 
     @Column({ allowNull: false })
     declare street: string
@@ -31,15 +32,12 @@ export class InvoiceModel extends Model {
     @Column({ allowNull: false })
     declare state: string
 
-    @Column({ allowNull: false })
-    declare zipcode: string
+    @Column({ allowNull: false, field: "zip_code" })
+    declare zipCode: string
 
     @Column({ allowNull: false, field: "created_at" })
-    declare createdAt: Date
+    declare createdAt: Date;
 
     @Column({ allowNull: false, field: "updated_at" })
-    declare updatedAt: Date
-
-    @HasMany(() => InvoiceItemModel)
-    declare items: InvoiceItemModel[];
+    declare updatedAt: Date;
 }

@@ -9,7 +9,7 @@ import InvoiceItem from "../domain/invoice-items.entity"
 
 export default class InvoiceRepository implements InvoiceGateway {
   async add(entity: Invoice): Promise<void> {
-    await InvoiceModel.create({
+    const model = {
       id: entity.id.id,
       name: entity.name,
       document: entity.document,
@@ -23,12 +23,14 @@ export default class InvoiceRepository implements InvoiceGateway {
       updatedAt: entity.updatedAt,
       items: entity.items.map(item => ({
         id: item.id.id,
+        invoiceId: entity.id.id,
         name: item.name,
         price: item.price,
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,
       }))
-    }, {
+    }
+    await InvoiceModel.create(model, {
       include: [InvoiceItemModel]
     })
   }

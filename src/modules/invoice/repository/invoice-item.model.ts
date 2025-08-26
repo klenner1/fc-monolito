@@ -2,27 +2,27 @@ import { Column, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescri
 import { InvoiceModel } from "./invoice.model";
 
 @Table({
-  tableName: 'invoice-item',
+  tableName: 'invoices_items',
   timestamps: false
 })
 export class InvoiceItemModel extends Model {
   @PrimaryKey
   @Column({ allowNull: false })
-  id: string
+  declare id: string
 
   @ForeignKey(() => InvoiceModel)
-  @Column({ allowNull: false })
-  invoiceId: string
+  @Column({ allowNull: false, field: "invoice_id" })
+  declare invoiceId: string
 
   @Column({ allowNull: false })
-  name: string
+  declare name: string
 
   @Column({ allowNull: false })
-  price: number
+  declare price: number
 
-  @Column({ allowNull: false })
-  createdAt: Date
+  @Column({ allowNull: false, field: "created_at" })
+  declare createdAt: Date
 
-  @Column({ allowNull: false })
-  updatedAt: Date
+  @Column({ allowNull: false, field: "updated_at" })
+  declare updatedAt: Date
 }

@@ -17,6 +17,7 @@ export default class ProductRepository implements ProductGateway {
         })
     );
   }
+
   async find(id: string): Promise<Product> {
     const product = await ProductModel.findOne({
       where: {
@@ -30,5 +31,18 @@ export default class ProductRepository implements ProductGateway {
       description: product.description,
       salesPrice: product.salesPrice,
     });
+  }
+
+  async update(product: Product): Promise<void> {
+    await ProductModel.update(
+      {
+        name: product.name,
+        description: product.description,
+        salesPrice: product.salesPrice,
+      },
+      {
+        where: { id: product.id.id },
+      }
+    );
   }
 }

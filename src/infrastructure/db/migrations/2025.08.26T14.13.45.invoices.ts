@@ -5,8 +5,6 @@ import { DataTypes, QueryInterface } from 'sequelize';
 export const up: MigrationFn<QueryInterface> = async (params) => {
     await params.context.createTable('invoices', {
         id: {
-            //type: DataTypes.UUID,
-            //defaultValue: DataTypes.UUIDV4,
             type: DataTypes.STRING,
             allowNull: false,
             primaryKey: true

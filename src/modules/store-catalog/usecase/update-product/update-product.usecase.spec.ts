@@ -1,12 +1,12 @@
 import Id from "../../../@shared/domain/value-object/id.value-object";
 import Product from "../../domain/product.entity";
-import FindProductUseCase from "./find-product.usecase";
+import UpdateProductUseCase from "./update-product.usecase";
 
 const product = new Product({
   id: new Id("1"),
   name: "Product 1",
   description: "Description 1",
-  salesPrice: 100,
+  salesPrice: 0,
 });
 
 const MockRepository = () => {
@@ -17,13 +17,14 @@ const MockRepository = () => {
   };
 };
 
-describe("find a product usecase unit test", () => {
+describe("change product sales price usecase unit test", () => {
   it("should find a product", async () => {
     const productRepository = MockRepository();
-    const usecase = new FindProductUseCase(productRepository);
+    const usecase = new UpdateProductUseCase(productRepository);
 
     const input = {
       id: "1",
+      salesPrice: 100,
     };
 
     const result = await usecase.execute(input);

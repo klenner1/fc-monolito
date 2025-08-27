@@ -1,16 +1,43 @@
 import { Umzug } from "umzug";
 import { PlaceOrderInputDto } from "../../../modules/checkout/usecase/place-order/place-order.dto";
 import { migrator } from "../../db/config/migrator ";
-import { app, sequelize } from "../express";
+import { app } from "../express";
 import request from "supertest";
+import { Sequelize } from "sequelize-typescript";
+import { CheckoutClientModel } from "../../../modules/checkout/repository/client.model";
+import { OrderItemModel } from "../../../modules/checkout/repository/order-item.model";
+import { OrderModel } from "../../../modules/checkout/repository/order.model";
+import { CheckoutProductModel } from "../../../modules/checkout/repository/product.model";
+import { ClientModel } from "../../../modules/client-adm/repository/client.model";
+import { InvoiceItemModel } from "../../../modules/invoice/repository/invoice-item.model";
+import { InvoiceModel } from "../../../modules/invoice/repository/invoice.model";
+import TransactionModel from "../../../modules/payment/repository/transaction.model";
+import { ProductModel } from "../../../modules/product-adm/repository/product.model";
+import StoreCatalogProductModel from "../../../modules/store-catalog/repository/product.model";
 
 describe("E2E test for checkout", () => {
 
+  let sequelize: Sequelize;
   let migration: Umzug<any>;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
+    sequelize = new Sequelize({
+      dialect: 'sqlite',
+      storage: ":memory:",
+      logging: false
+    });
+
+    sequelize.addModels([ProductModel]);
+    sequelize.addModels([ClientModel]);
+    sequelize.addModels([StoreCatalogProductModel]);
+    sequelize.addModels([InvoiceModel, InvoiceItemModel]);
+    sequelize.addModels([OrderModel, OrderItemModel, CheckoutClientModel, CheckoutProductModel]);
+    sequelize.addModels([TransactionModel]);
     migration = migrator(sequelize);
-    //await sequelize.sync({ force: true });
+
+  });
+
+  beforeEach(async () => {
     await migration.up();
   });
 
@@ -20,12 +47,12 @@ describe("E2E test for checkout", () => {
     }
     migration = migrator(sequelize)
     await migration.down()
-    await sequelize.close()
   })
 
-  /*   afterAll(async () => {
-      await sequelize.close();
-    }); */
+
+  afterAll(async () => {
+    await sequelize.close();
+  });
 
   it("should create a checkout", async () => {
     //arrange
@@ -47,10 +74,9 @@ describe("E2E test for checkout", () => {
       .post("/clients")
       .send(bodyClient);
     const clientId = responseClient.body.id;
-    console.log('responseClient', responseClient.statusCode, responseClient.body)
 
     const responseProduct = await request(app)
-      .post("/products")
+      .post("/adm/products")
       .send({
         name: "Car",
         description: "A nice car",
@@ -61,7 +87,7 @@ describe("E2E test for checkout", () => {
     const productId = responseProduct.body.id;
 
     await request(app)
-      .patch(`/products/${productId}/sales-price`)
+      .patch(`/catalog/products/${productId}/sales-price`)
       .send({
         salesPrice: 800
       });
@@ -78,7 +104,7 @@ describe("E2E test for checkout", () => {
     const response = await request(app)
       .post("/checkout")
       .send(body);
-    console.log(response.body);
+      
     //assert
     expect(response.status).toBe(200);
     expect(response.body.id).not.toBeNull();

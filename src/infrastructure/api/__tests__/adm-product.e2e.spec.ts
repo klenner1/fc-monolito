@@ -1,11 +1,11 @@
 import { Umzug } from "umzug";
-import { migrator } from "../../db/config/migrator ";
-import { app } from "../express";
+import { app, sequelize } from "../express";
 import request from "supertest";
+import { migrator } from "../../db/config/migrator ";
+import { ProductModel } from "../../../modules/product-adm/repository/product.model";
 import { Sequelize } from "sequelize-typescript";
-import { ClientModel } from "../../../modules/client-adm/repository/client.model";
 
-describe("E2E test for client", () => {
+describe("E2E test for product", () => {
 
   let sequelize: Sequelize;
   let migration: Umzug<any>;
@@ -17,7 +17,7 @@ describe("E2E test for client", () => {
       logging: false
     });
 
-    sequelize.addModels([ClientModel]);
+    sequelize.addModels([ProductModel]);
     migration = migrator(sequelize);
 
   });
@@ -39,29 +39,20 @@ describe("E2E test for client", () => {
     await sequelize.close();
   });
 
-
-  it("should create a client", async () => {
-    const body = {
-      name: "Fulano de Tal",
-      email: "Fulano@detal.com",
-      document: "12345678900",
-      description: "Um cliente",
-      address: {
-        street: "Rua tal",
-        number: "123",
-        complement: "Complemento",
-        city: "Cidade",
-        state: "Estado",
-        zipCode: "12345678"
-      }
-    };
+  it("should create a product", async () => {
     const response = await request(app)
-      .post("/clients")
-      .send(body);
-
+      .post("/adm/products")
+      .send({
+        name: "Car",
+        description: "A nice car",
+        purchasePrice: 500,
+        stock: 50
+      });
+      
     expect(response.status).toBe(200);
     expect(response.body.id).not.toBeNull();
-    expect(response.body.name).toBe(body.name);
+    expect(response.body.id).toBeDefined();
+    expect(response.body.name).toBe("Car");
+    expect(response.body.purchasePrice).toBe(500);
   });
-
 });

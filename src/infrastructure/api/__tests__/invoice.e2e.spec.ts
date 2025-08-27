@@ -1,19 +1,30 @@
 import { Umzug } from "umzug";
-import Address from "../../../modules/@shared/domain/value-object/address";
-import InvoiceItem from "../../../modules/invoice/domain/invoice-items.entity";
-import Invoice from "../../../modules/invoice/domain/invoice.entity";
-import InvoiceRepository from "../../../modules/invoice/repository/invoice.repository";
 import { GenerateInvoiceUseCaseInputDto } from "../../../modules/invoice/usecase/generate-invoice/generate-invoice.usecase.dto";
-import { app, sequelize } from "../express";
+import { app } from "../express";
 import request from "supertest";
 import { migrator } from "../../db/config/migrator ";
+import { Sequelize } from "sequelize-typescript";
+import { InvoiceModel } from "../../../modules/invoice/repository/invoice.model";
+import { InvoiceItemModel } from "../../../modules/invoice/repository/invoice-item.model";
 
 describe("E2E test for invoice", () => {
+
+  let sequelize: Sequelize;
   let migration: Umzug<any>;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
+    sequelize = new Sequelize({
+      dialect: 'sqlite',
+      storage: ":memory:",
+      logging: false
+    });
+
+    sequelize.addModels([InvoiceModel,InvoiceItemModel]);
     migration = migrator(sequelize);
-    //await sequelize.sync({ force: true });
+
+  });
+
+  beforeEach(async () => {
     await migration.up();
   });
 
@@ -25,10 +36,11 @@ describe("E2E test for invoice", () => {
     await migration.down()
   })
 
+
   afterAll(async () => {
-    await sequelize.close()
-    //await sequelize.close();
+    await sequelize.close();
   });
+
 
   it("should generate an invoice", async () => {
     //Arrange 
@@ -49,14 +61,14 @@ describe("E2E test for invoice", () => {
       ],
     } as GenerateInvoiceUseCaseInputDto;
     // Act
-    const response = await request(app)
-      .post("/invoice/")
-      .send(input);
-    // Assert
-    expect(response.status).toBe(200);
-    expect(response.body.id).toBeDefined();
-    expect(response.body.name).toBe("Fulano");
-    expect(response.body.total).toBe(1000);
+      const response = await request(app)
+        .post("/invoice/")
+        .send(input);
+      // Assert
+      expect(response.status).toBe(200);
+      expect(response.body.id).toBeDefined();
+      expect(response.body.name).toBe("Fulano");
+      expect(response.body.total).toBe(1000);
   });
 
 

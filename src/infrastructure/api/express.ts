@@ -1,6 +1,6 @@
-import express, { Express, NextFunction } from "express";
+import express, { Express } from "express";
 import { Sequelize } from "sequelize-typescript";
-import { productRoute } from "./routes/product.route";
+import { catalogProductRoute } from "./routes/catalog-product.route";
 import { ProductModel } from "../../modules/product-adm/repository/product.model";
 import { clientRoute } from "./routes/client.route";
 import { checkoutRoute } from "./routes/checkout.route";
@@ -14,11 +14,14 @@ import { CheckoutClientModel } from "../../modules/checkout/repository/client.mo
 import { CheckoutProductModel } from "../../modules/checkout/repository/product.model";
 import { OrderItemModel } from '../../modules/checkout/repository/order-item.model';
 import TransactionModel from "../../modules/payment/repository/transaction.model";
+import { admProductRoute } from "./routes/adm-product.route";
+import { migrator } from "../db/config/migrator ";
 
 
 export const app: Express = express();
 app.use(express.json());
-app.use("/products", productRoute);
+app.use("/adm/products", admProductRoute);
+app.use("/catalog/products", catalogProductRoute);
 app.use("/clients", clientRoute);
 app.use("/checkout", checkoutRoute);
 app.use("/invoice", invoiceRoute);
@@ -38,7 +41,7 @@ async function setupDb() {
   sequelize.addModels([OrderModel, OrderItemModel, CheckoutClientModel, CheckoutProductModel]);
   sequelize.addModels([TransactionModel]);
 
-
-//  await sequelize.sync();
+  const migration = migrator(sequelize);
+  await migration.up();
 }
 setupDb();
